@@ -419,6 +419,10 @@ async def send_long_message(message, text: str, reply_markup=None):
 
 # ─── MAIN ─────────────────────────────────────────────────────────────────────
 def main():
+    if not ANTHROPIC_API_KEY:
+        log.error("❌ ANTHROPIC_API_KEY не установлен!")
+        return
+
     app = Application.builder().token(TELEGRAM_TOKEN).build()
 
     app.add_handler(CommandHandler("start", cmd_start))
@@ -431,7 +435,7 @@ def main():
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, text_handler))
 
     log.info("🚀 SMETA.MD Bot started!")
-    app.run_polling(drop_pending_updates=True)
+    app.run_polling(allowed_updates=Update.ALL_TYPES, drop_pending_updates=True)
 
 if __name__ == "__main__":
     main()
